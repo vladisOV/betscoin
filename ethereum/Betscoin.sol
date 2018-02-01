@@ -18,9 +18,11 @@ contract Betscoin {
 
   address public owner;
   Event[] events;
+  mapping(string => Event) eventDescriptions;
 
-  function Betscoin() {
-    msg.sender = owner;
+
+  function Betscoin() public {
+    owner = msg.sender;
   }
 
   modifier restricted() {
