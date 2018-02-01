@@ -1,7 +1,6 @@
 pragma solidity ^0.4.17;
 
 contract Betscoin {
-
   struct Event{
     string description;
     string[] teams;
@@ -17,8 +16,8 @@ contract Betscoin {
   }
 
   address public owner;
-  Event[] events;
-  mapping(string => Event) eventDescriptions;
+  mapping(string => Event) events;
+  string[] eventDescriptions;
 
 
   function Betscoin() public {
@@ -30,24 +29,26 @@ contract Betscoin {
     _;
   }
 
-  function getEventsCount() public view returns (uint) {
-    return events.length;
+  function placeBet(string description, uint teamId) public payable {
+    Event storage eventInfo = events[description];
+    Bet memory newBet = Bet({
+        amount: msg.value,
+        teamId: teamId
+    });
+    eventInfo.players[msg.sender] = newBet;
+    eventInfo.prizePool += msg.value;
   }
 
-  function placeBet() {
-
+  function checkWinner(string description) {
+    Event storage eventInfo = events[description];
+    /* eventInfo.players[msg.sender] = */
+    //how to get bets ?
   }
 
-  function checkWinner() {
-
-  }
-
-  function setWinner() {
-
-  }
-
-  function  completeEvent() {
-
+  function completeEvent(string description, int teamId) public restricted {
+    Event storage eventInfo = events[description];
+    eventInfo.complete = true;
+    eventInfo.winnerId = teamId;
   }
 
   function createEvent(string description, string[] teams) public restricted {
@@ -58,6 +59,7 @@ contract Betscoin {
             winnerId: -1,
             prizePool: 0
           });
-    events.push(newEvent);
+    events[description] = newEvent;
+    eventDescriptions.push(description);
   }
 }
