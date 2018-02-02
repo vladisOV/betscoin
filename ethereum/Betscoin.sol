@@ -1,23 +1,26 @@
-pragma solidity ^0.4.17;
+pragma solidity ^0.4.18;
 
 contract Betscoin {
   struct Event{
     string description;
-    string[] teams;
+    mapping(uint => string) teams;
+    uint teamsCount;
     bool complete;
     uint prizePool;
     int winnerId;
+    bool start;
     mapping(address => Bet) players;
   }
 
   struct Bet {
     uint amount;
-    uint teamId;
+    int teamId;
+    bool paid;
   }
 
   address public owner;
-  mapping(string => Event) events;
-  string[] eventDescriptions;
+  Event[] public  events;
+  uint public eventsCount;
 
 
   function Betscoin() public {
@@ -29,37 +32,61 @@ contract Betscoin {
     _;
   }
 
-  function placeBet(string description, uint teamId) public payable {
-    Event storage eventInfo = events[description];
+  function placeBet(uint eventId, int teamId) public payable {
+    Event storage eventInfo = events[eventId];
+    require(eventInfo.start);
     Bet memory newBet = Bet({
         amount: msg.value,
-        teamId: teamId
+        teamId: teamId,
+        paid: false
     });
     eventInfo.players[msg.sender] = newBet;
     eventInfo.prizePool += msg.value;
   }
 
-  function checkWinner(string description) {
-    Event storage eventInfo = events[description];
-    /* eventInfo.players[msg.sender] = */
-    //how to get bets ?
+  function checkWinner(uint eventId) public {
+    Event storage eventInfo = events[eventId];
+    require(eventInfo.complete);
+    Bet storage betInfo = eventInfo.players[msg.sender];
+    require(!betInfo.paid);
+    if (eventInfo.winnerId == betInfo.teamId) {
+      msg.sender.transfer(betInfo.amount);//just cap
+      betInfo.paid = true;
+    }
   }
 
-  function completeEvent(string description, int teamId) public restricted {
-    Event storage eventInfo = events[description];
+  function startEvent(uint eventId) public {
+    Event storage eventInfo = events[eventId];
+    eventInfo.start = true;
+  }
+
+  function completeEvent(uint eventId, int teamId) public restricted {
+    Event storage eventInfo = events[eventId];
     eventInfo.complete = true;
     eventInfo.winnerId = teamId;
   }
 
-  function createEvent(string description, string[] teams) public restricted {
+  function addTeam(uint eventId, string team) public restricted {
+    Event storage eventInfo = events[eventId];
+    eventInfo.teams[eventInfo.teamsCount] = team;
+    eventInfo.teamsCount++;
+  }
+
+  function createEvent(string description) public restricted {
     Event memory newEvent = Event({
             description: description,
-            teams: teams,
             complete: false,
             winnerId: -1,
-            prizePool: 0
+            prizePool: 0,
+            start: false,
+            teamsCount: 0
           });
-    events[description] = newEvent;
-    eventDescriptions.push(description);
+    events.push(newEvent);
+    eventsCount++;
+  }
+
+  function getTeam(uint eventId, uint teamId) public view returns(string) {
+    Event storage eventInfo = events[eventId];
+    return eventInfo.teams[teamId];
   }
 }
