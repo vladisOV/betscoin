@@ -27,7 +27,6 @@ contract Betscoin {
 
   address public owner;
   Event[] public  events;
-  uint public eventsCount;
 
   function Betscoin() public {
     owner = msg.sender;
@@ -103,11 +102,15 @@ contract Betscoin {
             playersCount: 0
           });
     events.push(newEvent);
-    eventsCount++;
   }
 
-  function getTeam(uint eventId, int teamId) public view returns(Team) {
+  function getTeam(uint eventId, int teamId) public view returns(uint, string, uint) {
     Event storage eventInfo = events[eventId];
-    return eventInfo.teams[teamId];
+    Team storage team = eventInfo.teams[teamId];
+    return ( team.moneyBet, team.name, team.bettersCount);
+  }
+
+  function getEventsCount() public view returns(uint) {
+    return events.length;
   }
 }
