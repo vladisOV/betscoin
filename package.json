@@ -4,7 +4,8 @@
   "description": "betting app",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "dev": "next"
   },
   "repository": {
     "type": "git",
