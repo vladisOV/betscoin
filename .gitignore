@@ -39,3 +39,6 @@ typings/
 
 # next js
 .next
+
+# solidity build
+ethereum/build

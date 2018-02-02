@@ -3,12 +3,13 @@ pragma solidity ^0.4.18;
 contract Betscoin {
   struct Event{
     string description;
-    mapping(uint => string) teams;
-    uint teamsCount;
     bool complete;
     uint prizePool;
     int winnerId;
     bool start;
+    uint teamsCount;
+    uint playersCount;
+    mapping(uint => string) teams;
     mapping(address => Bet) players;
   }
 
@@ -41,6 +42,7 @@ contract Betscoin {
         paid: false
     });
     eventInfo.players[msg.sender] = newBet;
+    eventInfo.playersCount++;
     eventInfo.prizePool += msg.value;
   }
 
@@ -79,7 +81,8 @@ contract Betscoin {
             winnerId: -1,
             prizePool: 0,
             start: false,
-            teamsCount: 0
+            teamsCount: 0,
+            playersCount: 0
           });
     events.push(newEvent);
     eventsCount++;
