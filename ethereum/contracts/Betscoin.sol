@@ -7,9 +7,9 @@ contract Betscoin {
     uint prizePool;
     int winnerId;
     bool start;
-    uint teamsCount;
+    int teamsCount;
     uint playersCount;
-    mapping(uint => string) teams;
+    mapping(int => Team) teams;
     mapping(address => Bet) players;
   }
 
@@ -19,10 +19,15 @@ contract Betscoin {
     bool paid;
   }
 
+  struct Team {
+    string name;
+    uint bettersCount;
+    uint moneyBet;
+  }
+
   address public owner;
   Event[] public  events;
   uint public eventsCount;
-
 
   function Betscoin() public {
     owner = msg.sender;
@@ -31,6 +36,13 @@ contract Betscoin {
   modifier restricted() {
     require(msg.sender == owner);
     _;
+  }
+
+  function deposit() public payable {}
+
+  function withdraw(uint amount) public restricted {
+    require(amount < this.balance);
+    owner.transfer(amount);
   }
 
   function placeBet(uint eventId, int teamId) public payable {
@@ -44,6 +56,8 @@ contract Betscoin {
     eventInfo.players[msg.sender] = newBet;
     eventInfo.playersCount++;
     eventInfo.prizePool += msg.value;
+    eventInfo.teams[teamId].bettersCount++;
+    eventInfo.teams[teamId].moneyBet += msg.value;
   }
 
   function checkWinner(uint eventId) public {
@@ -52,7 +66,7 @@ contract Betscoin {
     Bet storage betInfo = eventInfo.players[msg.sender];
     require(!betInfo.paid);
     if (eventInfo.winnerId == betInfo.teamId) {
-      msg.sender.transfer(betInfo.amount);//just cap
+      msg.sender.transfer(eventInfo.prizePool / eventInfo.teams[betInfo.teamId].moneyBet * betInfo.amount);
       betInfo.paid = true;
     }
   }
@@ -70,7 +84,11 @@ contract Betscoin {
 
   function addTeam(uint eventId, string team) public restricted {
     Event storage eventInfo = events[eventId];
-    eventInfo.teams[eventInfo.teamsCount] = team;
+    eventInfo.teams[eventInfo.teamsCount] = Team({
+      name: team,
+      moneyBet: 0,
+      bettersCount: 0
+    });
     eventInfo.teamsCount++;
   }
 
@@ -88,7 +106,7 @@ contract Betscoin {
     eventsCount++;
   }
 
-  function getTeam(uint eventId, uint teamId) public view returns(string) {
+  function getTeam(uint eventId, int teamId) public view returns(Team) {
     Event storage eventInfo = events[eventId];
     return eventInfo.teams[teamId];
   }
