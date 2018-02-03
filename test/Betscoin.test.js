@@ -118,4 +118,17 @@ describe("Betscoin contract", () => {
       assert(err);
     }
   });
+  it("deposit & withdraw money", async () => {
+    await betscoin.methods.deposit().send({
+      from: owner,
+      value: 100
+    });
+    var contractBalance = await web3.eth.getBalance(betscoin.options.address);
+    assert.equal(100, contractBalance);
+    await betscoin.methods.withdraw(95).send({
+      from: owner
+    });
+    contractBalance = await web3.eth.getBalance(betscoin.options.address);
+    assert.equal(5, contractBalance);
+  });
 });
