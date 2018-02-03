@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import betscoin from "../ethereum/betscoin";
 import { Card } from "semantic-ui-react";
 import Layout from "../components/Layout";
+import Event from "../components/Event";
 
 class BetscoinIndex extends Component {
   static async getInitialProps() {
@@ -19,19 +20,17 @@ class BetscoinIndex extends Component {
 
   renderEvents() {
     const { events } = this.props;
-    var items = [];
+    var cards = [];
     for (let event of events) {
-      items.push({
-        header: event.description
-      });
+      cards.push(<Event event={event} />);
     }
-    return <Card.Group items={items} />;
+    return cards;
   }
 
   render() {
     return (
       <Layout>
-        <div>{this.renderEvents()}</div>
+        <Card.Group>{this.renderEvents()}</Card.Group>
       </Layout>
     );
   }
