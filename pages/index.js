@@ -21,9 +21,10 @@ class BetscoinIndex extends Component {
   renderEvents() {
     const { events } = this.props;
     var cards = [];
-    for (let event of events) {
-      cards.push(<Event event={event} />);
-    }
+    events.forEach(function(event, index) {
+      console.log(event);
+      cards.push(<Event event={event} key={index} />);
+    });
     return cards;
   }
 

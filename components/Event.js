@@ -9,6 +9,7 @@ class Event extends Component {
         <Card.Content>
           <Card.Header>{event.description}</Card.Header>
         </Card.Content>
+        <Card.Description>{event.team}</Card.Description>
       </Card>
     );
   }
