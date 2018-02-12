@@ -15,7 +15,7 @@ class BetscoinIndex extends Component {
           return betscoin.methods.events(index).call();
         })
     );
-    return { eventsCount, events };
+    return { events };
   }
 
   renderEvents() {
