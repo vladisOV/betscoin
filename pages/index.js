@@ -15,6 +15,17 @@ class BetscoinIndex extends Component {
           return betscoin.methods.events(index).call();
         })
     );
+    events.forEach(async function(event, eventIndex) {
+      const teams = await Promise.all(
+        Array(parseInt(event.teamsCount))
+          .fill()
+          .map((element, index) => {
+            return betscoin.methods.getTeam(eventIndex, index).call();
+          })
+      );
+      event.teams = teams;
+      console.log(event);
+    });
     return { events };
   }
 
