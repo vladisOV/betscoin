@@ -2,6 +2,14 @@ import React, { Component } from "react";
 import { Card } from "semantic-ui-react";
 
 class Event extends Component {
+  renderTeams() {
+    const { teams } = this.props.event;
+    for (let team of teams) {
+      console.log(team);
+    }
+    return <div>teams</div>;
+  }
+
   render() {
     const { event } = this.props;
     return (
@@ -9,7 +17,7 @@ class Event extends Component {
         <Card.Content>
           <Card.Header>{event.description}</Card.Header>
         </Card.Content>
-        <Card.Description>{event.team}</Card.Description>
+        <Card.Description>{this.renderTeams()}</Card.Description>
       </Card>
     );
   }

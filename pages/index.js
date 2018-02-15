@@ -7,30 +7,27 @@ import Event from "../components/Event";
 class BetscoinIndex extends Component {
   static async getInitialProps() {
     const eventsCount = await betscoin.methods.getEventsCount().call();
-    var events = await Promise.all(
-      Array(parseInt(eventsCount))
-        .fill()
-        .map((element, index) => {
-          var event = betscoin.methods.events(index).call();
-          event.index = index;
-          console.log(event);
-          return event;
-        })
-    );
-    for (var event of events) {
-      console.log(event.index);
-      // const teams = await Promise.all(
-      //   Array(parseInt(event.teamsCount))
-      //     .fill()
-      //     .map((element, teamIndex) => {
-      //       return betscoin.methods.getTeam(index, teamIndex).call();
-      //     })
-      // );
-      // event.teams = teams;
-      console.log("first");
+    var events = [];
+    for (var eventIndex = 0; eventIndex < parseInt(eventsCount); eventIndex++) {
+      var event = await betscoin.methods.events(eventIndex).call();
+      var teams = [];
+      for (
+        var teamIndex = 0;
+        teamIndex < parseInt(event.teamsCount);
+        teamIndex++
+      ) {
+        const team = await betscoin.methods
+          .getTeam(eventIndex, teamIndex)
+          .call();
+        teams.push({
+          moneyBet: team[0],
+          name: team[1],
+          bettersCount: team[2]
+        });
+      }
+      event.teams = teams;
+      events.push(event);
     }
-
-    console.log("second");
     return { events };
   }
 
