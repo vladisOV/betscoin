@@ -43,7 +43,9 @@ class BetscoinIndex extends Component {
   render() {
     return (
       <Layout>
-        <Card.Group>{this.renderEvents()}</Card.Group>
+        <Card.Group style={{ marginTop: "10px" }}>
+          {this.renderEvents()}
+        </Card.Group>
       </Layout>
     );
   }
