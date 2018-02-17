@@ -25,6 +25,7 @@ class BetscoinIndex extends Component {
           bettersCount: team[2]
         });
       }
+      event.id = eventIndex;
       event.teams = teams;
       events.push(event);
     }

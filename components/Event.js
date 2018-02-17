@@ -4,10 +4,13 @@ import TeamBet from "./TeamBet";
 
 class Event extends Component {
   renderTeams() {
-    const { teams } = this.props.event;
+    var { teams } = this.props.event;
     var teamButtons = [];
     teams.forEach((team, index) => {
-      teamButtons.push(<TeamBet team={team} key={index} />);
+      team.id = index;
+      teamButtons.push(
+        <TeamBet team={team} eventId={this.props.event.id} key={index} />
+      );
     });
     return teamButtons;
   }
@@ -18,9 +21,7 @@ class Event extends Component {
       <div>
         <Grid textAlign="center">
           <Grid.Row>{event.description}</Grid.Row>
-          <Grid.Row columns={event.teams.length}>
-            <div>{this.renderTeams()}</div>
-          </Grid.Row>
+          <Grid.Row columns={event.teams.length}>{this.renderTeams()}</Grid.Row>
         </Grid>
         <hr />
       </div>
