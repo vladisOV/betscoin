@@ -1,12 +1,13 @@
 import React, { Component } from "react";
-import { Card, Button } from "semantic-ui-react";
+import { Card, Grid } from "semantic-ui-react";
+import TeamBet from "./TeamBet";
 
 class Event extends Component {
   renderTeams() {
     const { teams } = this.props.event;
     var teamButtons = [];
     teams.forEach((team, index) => {
-      teamButtons.push(<Button key={index}>{team.name}</Button>);
+      teamButtons.push(<TeamBet team={team} key={index} />);
     });
     return teamButtons;
   }
@@ -14,14 +15,15 @@ class Event extends Component {
   render() {
     const { event } = this.props;
     return (
-      <Card>
-        <Card.Content>
-          <Card.Header>{event.description}</Card.Header>
-        </Card.Content>
-        <Card.Description>
-          <div>{this.renderTeams()}</div>
-        </Card.Description>
-      </Card>
+      <div>
+        <Grid textAlign="center">
+          <Grid.Row>{event.description}</Grid.Row>
+          <Grid.Row columns={event.teams.length}>
+            <div>{this.renderTeams()}</div>
+          </Grid.Row>
+        </Grid>
+        <hr />
+      </div>
     );
   }
 }

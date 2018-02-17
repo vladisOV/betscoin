@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import betscoin from "../ethereum/betscoin";
-import { Card } from "semantic-ui-react";
+import { Card, Grid } from "semantic-ui-react";
 import Layout from "../components/Layout";
 import Event from "../components/Event";
 
@@ -41,13 +41,7 @@ class BetscoinIndex extends Component {
   }
 
   render() {
-    return (
-      <Layout>
-        <Card.Group style={{ marginTop: "10px" }}>
-          {this.renderEvents()}
-        </Card.Group>
-      </Layout>
-    );
+    return <Layout>{this.renderEvents()}</Layout>;
   }
 }
 
