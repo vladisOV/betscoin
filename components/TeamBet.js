@@ -19,9 +19,6 @@ class TeamBet extends Component {
     const { bet } = this.state;
     const accounts = await web3.eth.getAccounts();
     const betWei = web3.utils.toWei(bet, "ether");
-    console.log(this.props);
-    console.log(this.props.eventId);
-    console.log(betWei);
     await betscoin.methods
       .placeBet(eventId, team.id)
       .send({ from: accounts[0], value: betWei });
